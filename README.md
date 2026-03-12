@@ -1,16 +1,56 @@
-## Hi there 👋
+name: Chess
 
-<!--
-**mhmdswbrman49-code/mhmdswbrman49-code** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+on:
+  issues:
+    types: [opened]
 
-Here are some ideas to get you started:
+jobs:
+  move:
+    name: Play Chess
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.issue.title, 'Chess:')
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+    steps:
+      - uses: actions/checkout@v6
+
+      # Set up a Python 3.10 (64-bit) instance
+      - name: Setting up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          architecture: "x64"
+
+      # Use pip to install the dependencies and then run the script
+      - name: Play chess
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          pip install -r requirements.txt
+          python main.py
+
+      # Create new commit with the changed files and push it to GitHub
+      - name: Commit and push changes
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "${ISSUE_TITLE} by ${ISSUE_AUTHOR}"
+          git push
+
+      - name: Install stockfish
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y stockfish
+          echo STOCKFISH_PATH="$(which stockfish)" >> $GITHUB_ENV
+
+      - name: Run webhook
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        run: |
+          pip install -r requirements-webhook.txt
+          python webhook.py
