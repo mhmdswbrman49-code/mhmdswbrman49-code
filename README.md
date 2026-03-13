@@ -1,48 +1,42 @@
-name: Chess
+# مرحباً بك في بروفايلي! ♟️
 
-on:
-  issues:
-    types: [opened]
+## العب شطرنج معي!
 
-jobs:
-  move:
-    name: Play Chess
-    runs-on: ubuntu-latest
-    if: startsWith(github.event.issue.title, 'Chess:')
+أنا أستخدم بوت شطرنج تلقائي - يمكنك تحدي الذكاء الاصطناعي!
 
-    steps:
-      - uses: actions/checkout@v6
+---
 
-      - name: Setting up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-          architecture: "x64"
+### 🎮 كيف تلعب؟
 
-      # ✅ Stockfish أولاً قبل أي شيء
-      - name: Install stockfish
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y stockfish
+1. اضغط على الحركة التي تريدها من الجدول أدناه
+2. سيقوم البوت بالرد تلقائياً خلال دقائق
+3. استمتع باللعبة! 🎯
 
-      # ✅ ثم تثبيت المتطلبات وتشغيل اللعبة
-      - name: Play chess
-        env:
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPOSITORY_OWNER: ${{ github.repository_owner }}
-        run: |
-          pip install -r requirements.txt
-          python main.py
+---
 
-      # ✅ أخيراً الحفظ والرفع
-      - name: Commit and push changes
-        env:
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "${ISSUE_TITLE} by ${ISSUE_AUTHOR}"
-          git push
+### ♟️ اللعبة الحالية
+
+<!-- CHESS START -->
+<!-- CHESS END -->
+
+---
+
+### 📊 إحصائيات اللعب
+
+| المقياس | العدد |
+|---------|-------|
+| 🎮 إجمالي الألعاب | 0 |
+| ✅ انتصارات البشر | 0 |
+| 🤖 انتصارات الذكاء الاصطناعي | 0 |
+
+---
+
+### 🛠️ مشاريعي
+
+> قريباً...
+
+---
+
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=mhmdswbrman49-code&show_icons=true&theme=dark" />
+</div>
