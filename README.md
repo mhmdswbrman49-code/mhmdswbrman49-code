@@ -13,14 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      # Set up a Python 3.10 (64-bit) instance
       - name: Setting up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
           architecture: "x64"
 
-      # Use pip to install the dependencies and then run the script
+      # ✅ Stockfish أولاً قبل أي شيء
+      - name: Install stockfish
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y stockfish
+
+      # ✅ ثم تثبيت المتطلبات وتشغيل اللعبة
       - name: Play chess
         env:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
@@ -30,7 +35,7 @@ jobs:
           pip install -r requirements.txt
           python main.py
 
-      # Create new commit with the changed files and push it to GitHub
+      # ✅ أخيراً الحفظ والرفع
       - name: Commit and push changes
         env:
           ISSUE_TITLE: ${{ github.event.issue.title }}
@@ -41,16 +46,3 @@ jobs:
           git add .
           git commit -m "${ISSUE_TITLE} by ${ISSUE_AUTHOR}"
           git push
-
-      - name: Install stockfish
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y stockfish
-          echo STOCKFISH_PATH="$(which stockfish)" >> $GITHUB_ENV
-
-      - name: Run webhook
-        env:
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        run: |
-          pip install -r requirements-webhook.txt
-          python webhook.py
